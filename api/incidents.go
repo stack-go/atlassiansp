@@ -23,7 +23,7 @@ type (
 	Incident struct {
 		ID                                        string         `json:"id,omitempty"`
 		Components                                interface{}    `json:"components,omitempty"`
-		ComponentIDs                              []interface{}  `json:"components_ids,omitempty"`
+		ComponentIDs                              []string       `json:"component_ids,omitempty"`
 		CreatedAt                                 *time.Time     `json:"created_at,omitempty"`
 		Impact                                    Impact         `json:"impact,omitempty"`
 		ImpactOverride                            Impact         `json:"impact_override,omitempty"`
@@ -359,6 +359,7 @@ func (s StatusPage) GetOpenedIncidentByName(name, componentID string) (i Inciden
 	for _, incident := range incidents {
 
 		if incident.Name == name {
+
 			for _, id := range incident.ComponentIDs {
 
 				if id == componentID {
