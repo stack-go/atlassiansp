@@ -70,6 +70,7 @@ func (s StatusPage) GetComponents() ([]Component, error) {
 		return components, err
 	}
 	if rsp.StatusCode != 200 {
+		log.Printf("Error %s", fmt.Errorf("error %s %s", rsp.Status, body))
 		return components, fmt.Errorf("error %s %s", rsp.Status, body)
 	}
 
@@ -103,6 +104,7 @@ func (s StatusPage) UpdateComponent(c Component) (Component, error) {
 	}
 	r.Header.Add("Authorization", fmt.Sprintf("OAuth %s", s.Client.Config.Token))
 	r.Header.Add("Content-Type", "application/json")
+	log.Printf("Atualizando componente %s", c.Name)
 	rsp, err := s.Client.httpclient.Do(r)
 	if err != nil {
 		log.Printf("Error %s", err)
@@ -116,6 +118,7 @@ func (s StatusPage) UpdateComponent(c Component) (Component, error) {
 	if rsp.StatusCode != 200 {
 		return c, fmt.Errorf("error %s %s", rsp.Status, body)
 	}
+	log.Printf("componente %s atualizado", c.Name)
 
 	json.Unmarshal(body, &c)
 
@@ -141,6 +144,7 @@ func (s StatusPage) CreateComponent(c Component) (Component, error) {
 	}
 	r.Header.Add("Authorization", fmt.Sprintf("OAuth %s", s.Client.Config.Token))
 	r.Header.Add("Content-Type", "application/json")
+	log.Printf("criando componente %s", c.Name)
 	rsp, err := s.Client.httpclient.Do(r)
 	if err != nil {
 		log.Printf("Error %s", err)
@@ -155,7 +159,7 @@ func (s StatusPage) CreateComponent(c Component) (Component, error) {
 	if rsp.StatusCode != 201 {
 		return c, fmt.Errorf("error %s %s", rsp.Status, body)
 	}
-
+	log.Printf("componente %s criado com sucesso", c.Name)
 	json.Unmarshal(body, &c)
 
 	return c, nil
@@ -172,6 +176,7 @@ func (s StatusPage) DeleteComponent(c Component) error {
 		return err
 	}
 	r.Header.Add("Authorization", fmt.Sprintf("OAuth %s", s.Client.Config.Token))
+	log.Printf("deletando componente %s", c.Name)
 	rsp, err := s.Client.httpclient.Do(r)
 	if err != nil {
 		log.Printf("Error %s", err)
@@ -186,7 +191,7 @@ func (s StatusPage) DeleteComponent(c Component) error {
 	if rsp.StatusCode != 200 {
 		return fmt.Errorf("error %s %s", rsp.Status, body)
 	}
-
+	log.Printf("componente deletado com sucesso %s", c.Name)
 	return nil
 
 }

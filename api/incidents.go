@@ -118,6 +118,7 @@ func (s StatusPage) GetIncidents() ([]Incident, error) {
 		return incidents, err
 	}
 	if rsp.StatusCode != 200 {
+		log.Printf("Error %s", fmt.Errorf("error %s %s", rsp.Status, body))
 		return incidents, fmt.Errorf("error %s %s", rsp.Status, body)
 	}
 
@@ -150,6 +151,7 @@ func (s StatusPage) GetUnresolvedIncidents() ([]Incident, error) {
 		return incidents, err
 	}
 	if rsp.StatusCode != 200 {
+		log.Printf("Error %s", fmt.Errorf("error %s %s", rsp.Status, body))
 		return incidents, fmt.Errorf("error %s %s", rsp.Status, body)
 	}
 
@@ -199,6 +201,7 @@ func (s StatusPage) UpdateIncident(i Incident) (Incident, error) {
 	}
 	r.Header.Add("Authorization", fmt.Sprintf("OAuth %s", s.Client.Config.Token))
 	r.Header.Add("Content-Type", "application/json")
+	log.Printf("atualizando incidente %s", i.Name)
 	rsp, err := s.Client.httpclient.Do(r)
 	if err != nil {
 		log.Printf("Error %s", err)
@@ -210,9 +213,10 @@ func (s StatusPage) UpdateIncident(i Incident) (Incident, error) {
 		return i, err
 	}
 	if rsp.StatusCode != 200 {
+		log.Printf("Error %s", fmt.Errorf("error %s %s", rsp.Status, body))
 		return i, fmt.Errorf("error %s %s", rsp.Status, body)
 	}
-
+	log.Printf("incidente %s atualizado com sucesso", i.Name)
 	json.Unmarshal(body, &i)
 
 	return i, nil
@@ -243,6 +247,7 @@ func (s StatusPage) CreateIncident(i Incident) (Incident, error) {
 	}
 	r.Header.Add("Authorization", fmt.Sprintf("OAuth %s", s.Client.Config.Token))
 	r.Header.Add("Content-Type", "application/json")
+	log.Printf("criando incidente %s", i.Name)
 	rsp, err := s.Client.httpclient.Do(r)
 	if err != nil {
 		log.Printf("Error %s", err)
@@ -255,9 +260,10 @@ func (s StatusPage) CreateIncident(i Incident) (Incident, error) {
 		return i, err
 	}
 	if rsp.StatusCode != 201 {
+		log.Printf("Error %s", fmt.Errorf("error %s %s", rsp.Status, body))
 		return i, fmt.Errorf("error %s %s", rsp.Status, body)
 	}
-
+	log.Printf("incidente %s criado com sucesso", i.Name)
 	json.Unmarshal(body, &i)
 
 	return i, nil
@@ -274,6 +280,7 @@ func (s StatusPage) DeleteIncident(i Incident) error {
 		return err
 	}
 	r.Header.Add("Authorization", fmt.Sprintf("OAuth %s", s.Client.Config.Token))
+	log.Printf("deletando incidente %s", i.Name)
 	rsp, err := s.Client.httpclient.Do(r)
 	if err != nil {
 		log.Printf("Error %s", err)
@@ -286,9 +293,10 @@ func (s StatusPage) DeleteIncident(i Incident) error {
 		return err
 	}
 	if rsp.StatusCode != 200 {
+		log.Printf("Error %s", fmt.Errorf("error %s %s", rsp.Status, body))
 		return fmt.Errorf("error %s %s", rsp.Status, body)
 	}
-
+	log.Printf("incidente %s deletado com sucesso", i.Name)
 	return nil
 
 }
@@ -379,6 +387,6 @@ func (s StatusPage) GetOpenedIncidentByName(name, componentID string) (i Inciden
 		}
 
 	}
-	return i, fmt.Errorf("unable to find incident by name", name)
+	return i, fmt.Errorf("unable to find incident by name %s", name)
 
 }

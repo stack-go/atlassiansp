@@ -51,6 +51,7 @@ func (s StatusPage) GetComponentGroups() ([]ComponentGroup, error) {
 		return groups, err
 	}
 	if rsp.StatusCode != 200 {
+		log.Printf("Error %s", fmt.Errorf("error %s %s", rsp.Status, body))
 		return groups, fmt.Errorf("error %s %s", rsp.Status, body)
 	}
 	json.Unmarshal(body, &groups)
@@ -80,6 +81,7 @@ func (s StatusPage) UpdateComponentGroup(c ComponentGroup) (ComponentGroup, erro
 	}
 	r.Header.Add("Authorization", fmt.Sprintf("OAuth %s", s.Client.Config.Token))
 	r.Header.Add("Content-Type", "application/json")
+	log.Printf("atualizando grupo %s", c.Name)
 	rsp, err := s.Client.httpclient.Do(r)
 	if err != nil {
 		log.Printf("Error %s", err)
@@ -92,9 +94,10 @@ func (s StatusPage) UpdateComponentGroup(c ComponentGroup) (ComponentGroup, erro
 		return c, err
 	}
 	if rsp.StatusCode != 200 {
+		log.Printf("Error %s", fmt.Errorf("error %s %s", rsp.Status, body))
 		return c, fmt.Errorf("error %s %s", rsp.Status, body)
 	}
-
+	log.Printf("grupo atualizado %s", c.Name)
 	json.Unmarshal(body, &c)
 
 	return c, nil
@@ -118,6 +121,7 @@ func (s StatusPage) CreateComponentGroup(c ComponentGroup) (ComponentGroup, erro
 	}
 	r.Header.Add("Authorization", fmt.Sprintf("OAuth %s", s.Client.Config.Token))
 	r.Header.Add("Content-Type", "application/json")
+	log.Printf("criando grupo %s", c.Name)
 	rsp, err := s.Client.httpclient.Do(r)
 	if err != nil {
 		log.Printf("Error %s", err)
@@ -129,8 +133,10 @@ func (s StatusPage) CreateComponentGroup(c ComponentGroup) (ComponentGroup, erro
 		return c, err
 	}
 	if rsp.StatusCode != 201 {
+		log.Printf("Error %s", fmt.Errorf("error %s %s", rsp.Status, body))
 		return c, fmt.Errorf("error %s %s", rsp.Status, body)
 	}
+	log.Printf("grupo %s criado com sucesso", c.Name)
 
 	json.Unmarshal(body, &c)
 
@@ -148,6 +154,7 @@ func (s StatusPage) DeleteComponentGroups(c ComponentGroup) error {
 		return err
 	}
 	r.Header.Add("Authorization", fmt.Sprintf("OAuth %s", s.Client.Config.Token))
+	log.Printf("deletando grupo %s", c.Name)
 	rsp, err := s.Client.httpclient.Do(r)
 	if err != nil {
 		log.Printf("Error %s", err)
@@ -160,9 +167,10 @@ func (s StatusPage) DeleteComponentGroups(c ComponentGroup) error {
 		return err
 	}
 	if rsp.StatusCode != 200 {
+		log.Printf("Error %s", fmt.Errorf("error %s %s", rsp.Status, body))
 		return fmt.Errorf("error %s %s", rsp.Status, body)
 	}
-
+	log.Printf("grupo %s deletado com sucesso", c.Name)
 	return nil
 
 }
